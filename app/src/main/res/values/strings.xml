@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Seatcret</string>
+    <string name="msg_token_fmt">InstanceID Token: %s</string>
 </resources>
