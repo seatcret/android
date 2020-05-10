@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "8654577140",
+    "firebase_url": "https://seatcret.firebaseio.com",
+    "project_id": "seatcret",
+    "storage_bucket": "seatcret.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:8654577140:android:1fd3d475baf8f6a9256da1",
+        "android_client_info": {
+          "package_name": "com.example.seatcret"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "8654577140-rpmnlnhcnpb4vm064tj2j9pimi2uq38d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWToixcSwcXvPn_Bi3ah7XIf934711JAo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "8654577140-rpmnlnhcnpb4vm064tj2j9pimi2uq38d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
