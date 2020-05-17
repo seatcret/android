@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
 
                 val queue = Volley.newRequestQueue(this)
-                val url = R.string.server_url
+                val url = getString(R.string.server_url)
 
                 val request = object : StringRequest(Method.POST, "$url/users/", Response.Listener {
                     Toast.makeText(baseContext, "Successfully registered device!", Toast.LENGTH_SHORT).show()
