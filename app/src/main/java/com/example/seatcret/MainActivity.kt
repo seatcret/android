@@ -1,11 +1,16 @@
 package com.example.seatcret
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
+import org.json.JSONObject
 
 
 class MainActivity : AppCompatActivity() {
@@ -27,10 +32,37 @@ class MainActivity : AppCompatActivity() {
                 // Get new Instance ID token
                 val token = task.result?.token
 
+                // Store token in shared preference
+                val sharedPref = baseContext.getSharedPreferences("ephemeral", Context.MODE_PRIVATE)
+                with (sharedPref.edit()) {
+                    putString("fcm_token", token)
+                    commit()
+                }
+
                 // Log and toast
                 val msg = getString(R.string.msg_token_fmt, token)
                 Log.d(TAG, msg)
                 Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+
+                val queue = Volley.newRequestQueue(this)
+                val url = R.string.server_url
+
+                val request = object : StringRequest(Method.POST, "$url/users/", Response.Listener {
+                    Toast.makeText(baseContext, "Successfully registered device!", Toast.LENGTH_SHORT).show()
+                }, Response.ErrorListener { error ->
+                    Log.d(TAG, error.toString())
+                }) {
+                    override fun getBodyContentType(): String {
+                        return "application/json"
+                    }
+                    override fun getBody(): ByteArray {
+                        val body = HashMap<String, String>()
+                        body["token"] = token.toString()
+                        body["platform"] = "fcm"
+                        return JSONObject(body as Map<String, String>).toString().toByteArray()
+                    }
+                }
+                queue.add(request)
             })
     }
 }

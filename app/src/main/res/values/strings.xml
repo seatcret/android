@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Seatcret</string>
     <string name="msg_token_fmt">InstanceID Token: %s</string>
+    <string name="server_url">https://seatcret.ji.hyeok.org</string>
 </resources>
