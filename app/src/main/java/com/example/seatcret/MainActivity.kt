@@ -85,14 +85,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private var lastTimeBackPressed:Long = -1000
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         // Check if the key event was the Back button and if there's history
-        if (keyCode == KeyEvent.KEYCODE_BACK && webview.canGoBack()) {
-            webview.goBack()
+        if (keyCode == KeyEvent.KEYCODE_BACK){
+            if(webview.canGoBack())
+                webview.goBack()
+            else {
+                //If there's no history, exit when the back button is double clicked in 1s
+                if (System.currentTimeMillis() - lastTimeBackPressed <= 1000)
+                    finish()
+                lastTimeBackPressed = System.currentTimeMillis()
+            }
             return true
         }
-        // If it wasn't the Back key or there's no web page history, bubble up to the default
-        // system behavior (probably exit the activity)
+        // system behavior
         return super.onKeyDown(keyCode, event)
     }
 }
