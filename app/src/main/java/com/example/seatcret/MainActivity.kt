@@ -3,6 +3,9 @@ package com.example.seatcret
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.webkit.CookieManager
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Response
@@ -22,6 +25,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val webView: WebView = findViewById(R.id.webview)
+        val url = getString(R.string.server_url)
+        webView.loadUrl(url)
+        webView.webViewClient = WebViewClient()
+        val sharedPref = baseContext.getSharedPreferences("ephemeral", Context.MODE_PRIVATE)
+        val storedToken = sharedPref.getString("fcm_token", null)
+        CookieManager.getInstance().setCookie(url, "token=fcm:$storedToken")
+
         FirebaseInstanceId.getInstance().instanceId
             .addOnCompleteListener(OnCompleteListener {task ->
                 if (!task.isSuccessful) {
@@ -33,7 +44,6 @@ class MainActivity : AppCompatActivity() {
                 val token = task.result?.token
 
                 // Store token in shared preference
-                val sharedPref = baseContext.getSharedPreferences("ephemeral", Context.MODE_PRIVATE)
                 with (sharedPref.edit()) {
                     putString("fcm_token", token)
                     commit()
@@ -45,7 +55,6 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
 
                 val queue = Volley.newRequestQueue(this)
-                val url = getString(R.string.server_url)
 
                 val request = object : StringRequest(Method.POST, "$url/users/", Response.Listener {
                     Toast.makeText(baseContext, "Successfully registered device!", Toast.LENGTH_SHORT).show()
