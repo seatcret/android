@@ -1,6 +1,7 @@
 package com.example.seatcret
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.webkit.CookieManager
@@ -25,13 +26,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val webView: WebView = findViewById(R.id.webview)
-        val url = getString(R.string.server_url)
-        webView.loadUrl(url)
-        webView.webViewClient = WebViewClient()
+        val baseUrl = getString(R.string.server_url)
         val sharedPref = baseContext.getSharedPreferences("ephemeral", Context.MODE_PRIVATE)
-        val storedToken = sharedPref.getString("fcm_token", null)
-        CookieManager.getInstance().setCookie(url, "token=fcm:$storedToken")
 
         FirebaseInstanceId.getInstance().instanceId
             .addOnCompleteListener(OnCompleteListener {task ->
@@ -56,7 +52,7 @@ class MainActivity : AppCompatActivity() {
 
                 val queue = Volley.newRequestQueue(this)
 
-                val request = object : StringRequest(Method.POST, "$url/users/", Response.Listener {
+                val request = object : StringRequest(Method.POST, "$baseUrl/users/", Response.Listener {
                     Toast.makeText(baseContext, "Successfully registered device!", Toast.LENGTH_SHORT).show()
                 }, Response.ErrorListener { error ->
                     Log.d(TAG, error.toString())
@@ -73,5 +69,17 @@ class MainActivity : AppCompatActivity() {
                 }
                 queue.add(request)
             })
+
+        val webView: WebView = findViewById(R.id.webview)
+        webView.webViewClient = WebViewClient()
+
+        val storedToken = sharedPref.getString("fcm_token", null)
+        CookieManager.getInstance().setCookie(baseUrl, "token=fcm:$storedToken")
+
+        if (intent.action == Intent.ACTION_MAIN) {
+            webView.loadUrl(baseUrl)
+        } else {
+            webView.loadUrl(intent?.data.toString())
+        }
     }
 }
