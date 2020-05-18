@@ -1,12 +1,17 @@
 package com.example.seatcret
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.firebase.messaging.FirebaseMessagingService
+import com.google.firebase.messaging.RemoteMessage
 import org.json.JSONObject
+
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
     companion object {
@@ -62,5 +67,32 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             }
         }
         queue.add(request)
+    }
+
+    override fun onMessageReceived(remoteMessage: RemoteMessage) {
+        // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
+        Log.d(TAG, "From: ${remoteMessage.from}")
+
+        // Check if message contains a data payload.
+        remoteMessage.data.isNotEmpty().let {
+            Log.d(TAG, "Message data payload: " + remoteMessage.data)
+        }
+
+        // Check if message contains a notification payload.
+        remoteMessage.notification?.let {
+            Log.d(TAG, "Message Notification Body: ${it.body}")
+        }
+
+        val messageBody = remoteMessage.notification!!.body
+        Log.d(TAG, "FCM Notification Message Body : $messageBody")
+
+        val handler = Handler(Looper.getMainLooper())
+        handler.post {
+            Toast.makeText(
+                applicationContext,
+                messageBody,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 }
