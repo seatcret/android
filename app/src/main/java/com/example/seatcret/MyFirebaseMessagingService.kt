@@ -91,7 +91,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             Toast.makeText(
                 applicationContext,
                 messageBody,
-                Toast.LENGTH_SHORT
+                Toast.LENGTH_LONG
             ).show()
         }
     }
